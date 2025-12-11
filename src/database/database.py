@@ -37,7 +37,7 @@ class PropertyDatabase:
         if field_name in ["metros_cuadrados_cubiertos", "metros_cuadrados_totales", 
                          "cantidad_dormitorios", "cantidad_banos", "cantidad_ambientes"]:
             return "INTEGER"
-        elif field_name == "precio":
+        elif field_name in ["precio", "costo_metro_cuadrado"]:
             return "REAL"
         elif field_name in ["tiene_patio", "tiene_quincho", "tiene_pileta", "tiene_cochera",
                            "tiene_balcon", "tiene_terraza"]:

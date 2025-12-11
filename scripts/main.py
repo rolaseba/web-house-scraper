@@ -65,8 +65,13 @@ def process_property(url: str, scraper: PropertyScraper, processor: LLMProcessor
         extracted_data = processor.process_property(scraped_data)
         logger.info(f"✓ Extracted data: {list(extracted_data.keys())}")
         
-        # Step 3: Save to database (UPSERT)
-        logger.info("Step 3: Saving to database...")
+        # Step 3: Calculate derived fields
+        logger.info("Step 3: Calculating derived fields...")
+        from src.utils.calculated_fields import calculate_all_fields
+        extracted_data = calculate_all_fields(extracted_data)
+        
+        # Step 4: Save to database (UPSERT)
+        logger.info("Step 4: Saving to database...")
         status = db.upsert_property(extracted_data)
         
         if status == 'inserted':

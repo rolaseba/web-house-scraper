@@ -50,7 +50,11 @@ def main():
             print(f"   📍 Dirección: {prop.get('direccion', 'N/A')}")
             
             # Price
-            print(f"   💰 Precio: {format_currency(prop.get('precio'), prop.get('moneda', 'USD'))}")
+            precio_str = format_currency(prop.get('precio'), prop.get('moneda', 'USD'))
+            costo_m2 = prop.get('costo_metro_cuadrado')
+            if costo_m2:
+                precio_str += f" | {costo_m2:.2f} {prop.get('moneda', 'USD')}/m²"
+            print(f"   💰 Precio: {precio_str}")
             
             # Surface
             m2_cub = prop.get('metros_cuadrados_cubiertos') or 'N/A'
