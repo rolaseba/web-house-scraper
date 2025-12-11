@@ -1,13 +1,12 @@
-#!/usr/bin/env python3
-"""Script to view property database contents in a readable format."""
-
-import sys
-import os
-
-# Add project root to Python path
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
+"""
+Utilities for viewing database content.
+"""
 from src.database.database import PropertyDatabase
+from rich.console import Console
+from rich.table import Table
+from rich import box
+
+console = Console()
 
 def format_currency(precio, moneda):
     """Format price with currency."""
@@ -32,7 +31,24 @@ def truncate_url(url, max_len=80):
         return url[:max_len] + '...'
     return url
 
-def main():
+def show_stats():
+    """Show database statistics."""
+    with PropertyDatabase() as db:
+        count = db.count_properties()
+        
+        table = Table(title="[bold]DATABASE STATISTICS[/bold]", box=box.ROUNDED, border_style="cyan")
+        table.add_column("Metric", style="cyan", no_wrap=True)
+        table.add_column("Value", justify="right", style="bold")
+        
+        table.add_row("Total Properties", str(count))
+        table.add_row("Database File", db.db_file)
+        
+        console.print()
+        console.print(table)
+        console.print()
+
+def view_database():
+    """View all properties in the database."""
     with PropertyDatabase() as db:
         properties = db.get_all_properties()
         
@@ -102,6 +118,3 @@ def main():
         
         print(f"\nTotal: {len(properties)} propiedades")
         print("="*100 + "\n")
-
-if __name__ == "__main__":
-    main()

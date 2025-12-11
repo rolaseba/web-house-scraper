@@ -7,3 +7,5 @@ https://www.zonaprop.com.ar/propiedades/clasificado/veclcain-casa-de-pasillo-uni
 https://www.argenprop.com/departamento-en-venta-en-centro-6-ambientes--18157682
 
 https://www.argenprop.com/departamento-en-venta-en-luis-agote-3-ambientes--17849475
+
+https://www.zonaprop.com.ar/propiedades/clasificado/veclcain-venta-casa-3-4-dorm.-barrio-parque-rosario-54487690.html

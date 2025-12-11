@@ -79,8 +79,7 @@ web-house-scraper/
 │   └── site_configs.json          # Patrones de extracción por sitio
 │
 ├── 📁 scripts/                      # Scripts ejecutables
-│   ├── main.py                     # Script principal
-│   └── view_db.py                  # Visualizar base de datos
+│   └── main.py                     # CLI principal (Typer)
 │
 ├── 📁 tests/                        # Tests (preparado para el futuro)
 │
@@ -104,13 +103,51 @@ https://www.argenprop.com/departamento-en-venta...
 ### 2. Ejecutar el scraper
 
 ```bash
-python scripts/main.py
+python scripts/main.py scrape
+```
+
+Para saltar propiedades ya existentes:
+
+```bash
+python scripts/main.py scrape --skip-existing
 ```
 
 ### 3. Ver resultados
 
 ```bash
-python scripts/view_db.py
+python scripts/main.py view
+```
+
+### 4. Ver estadísticas
+
+```bash
+python scripts/main.py stats
+```
+
+### 5. Exportar a CSV
+
+```bash
+python scripts/main.py export
+```
+
+Por defecto guarda en `data/properties_export.csv`. Para cambiar el archivo:
+
+```bash
+python scripts/main.py export --output mi_archivo.csv
+```
+
+### 6. Ayuda
+
+Para ver todos los comandos disponibles:
+
+```bash
+python scripts/main.py --help
+```
+
+O ayuda específica de un comando:
+
+```bash
+python scripts/main.py scrape --help
 ```
 
 O acceder directamente a la base de datos:
@@ -312,13 +349,13 @@ ollama serve # Iniciar servidor
 ```bash
 cd /home/seba/Documentos/Data\ Science\ Projects/web-house-scraper
 source venv/bin/activate
-python scripts/main.py
+python scripts/main.py scrape
 ```
 
 ### Ver propiedades formateadas
 
 ```bash
-python scripts/view_db.py
+python scripts/main.py view
 ```
 
 ### Consulta SQL directa
