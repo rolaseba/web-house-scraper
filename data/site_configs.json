@@ -1,0 +1,126 @@
+{
+    "zonaprop.com.ar": {
+        "name": "Zonaprop",
+        "patterns": {
+            "precio": {
+                "type": "regex",
+                "pattern": "(?:USD|ARS|\\$)\\s*([\\d.,]+)",
+                "search_in": "text"
+            },
+            "moneda": {
+                "type": "regex",
+                "pattern": "(USD|ARS|\\$)",
+                "search_in": "text",
+                "transform": {
+                    "$": "ARS",
+                    "USD": "USD",
+                    "ARS": "ARS"
+                }
+            },
+            "metros_cuadrados_totales": {
+                "type": "regex",
+                "pattern": "(\\d+)\\s*m²\\s*tot\\.",
+                "search_in": "html"
+            },
+            "metros_cuadrados_cubiertos": {
+                "type": "regex",
+                "pattern": "(\\d+)\\s*m²\\s*cub\\.",
+                "search_in": "html"
+            },
+            "cantidad_dormitorios": {
+                "type": "regex",
+                "pattern": "(\\d+)\\s*dorm",
+                "search_in": "text"
+            },
+            "cantidad_banos": {
+                "type": "regex",
+                "pattern": "(\\d+)\\s*baño",
+                "search_in": "text"
+            },
+            "tipo_operacion": {
+                "type": "regex",
+                "pattern": "(venta|alquiler|alquila)",
+                "search_in": "text",
+                "transform": {
+                    "venta": "venta",
+                    "alquiler": "alquiler",
+                    "alquila": "alquiler"
+                }
+            },
+            "barrio": {
+                "type": "llm_required",
+                "note": "Requires LLM to extract neighborhood accurately"
+            },
+            "direccion": {
+                "type": "llm_required",
+                "note": "Requires LLM to extract address"
+            }
+        }
+    },
+    "argenprop.com": {
+        "name": "Argenprop",
+        "patterns": {
+            "precio": {
+                "type": "css_selector",
+                "selector": ".titlebar__price",
+                "extract": "text",
+                "regex": "([\\d.,]+)"
+            },
+            "moneda": {
+                "type": "css_selector",
+                "selector": ".titlebar__price",
+                "extract": "text",
+                "regex": "(USD|ARS|\\$)",
+                "transform": {
+                    "$": "ARS",
+                    "USD": "USD",
+                    "ARS": "ARS"
+                }
+            },
+            "metros_cuadrados_cubiertos": {
+                "type": "regex",
+                "pattern": "(\\d+)\\s*m²\\s*Cubierta",
+                "search_in": "html"
+            },
+            "cantidad_dormitorios": {
+                "type": "regex",
+                "pattern": "(\\d+)\\s*dormitorio",
+                "search_in": "text"
+            },
+            "cantidad_banos": {
+                "type": "regex",
+                "pattern": "(\\d+)\\s*baño",
+                "search_in": "text"
+            },
+            "tipo_operacion": {
+                "type": "regex",
+                "pattern": "(Venta|Alquiler)",
+                "search_in": "text",
+                "transform": {
+                    "Venta": "venta",
+                    "Alquiler": "alquiler"
+                }
+            },
+            "barrio": {
+                "type": "llm_required",
+                "note": "Requires LLM"
+            },
+            "direccion": {
+                "type": "llm_required",
+                "note": "Requires LLM"
+            }
+        }
+    },
+    "_comments": {
+        "note": "Configuration file for site-specific data extraction",
+        "pattern_types": [
+            "regex: Use regular expression to extract from text or HTML",
+            "css_selector: Use CSS selector to find element, then apply regex if needed",
+            "llm_required: Mark field as requiring LLM processing"
+        ],
+        "search_in_options": [
+            "text: Search in clean text content",
+            "html: Search in raw HTML"
+        ]
+    }
+}

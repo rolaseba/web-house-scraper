@@ -1,0 +1,75 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+
+# Environment Variables
+.env
+
+# Database
+data/properties.db
+data/*.db
+*.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Playwright
+.pytest_cache/
+playwright/.auth/
+
+# OS
+Thumbs.db
+.DS_Store
+*.bak
+
+# Temporary files
+*.tmp
+temp/
+tmp/
+
+# Jupyter Notebook (si se agregan en el futuro)
+.ipynb_checkpoints/
+*.ipynb
+
+# Pytest
+.pytest_cache/
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+.hypothesis/
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Project specific
+# Solo ignorar la base de datos, el archivo de links se puede versionar
+# data/links-to-scrap.md debería estar en el repo como ejemplo
+data/*.db
+data/*.sqlite
+data/*.sqlite3
