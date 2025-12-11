@@ -7,7 +7,7 @@ from rich.console import Console
 from src.core.scraper import PropertyScraper
 from src.core.llm_processor import LLMProcessor
 from src.database.database import PropertyDatabase
-from src.utils import config
+from src.utils import config, status_manager
 
 logger = logging.getLogger(__name__)
 console = Console()
@@ -92,13 +92,22 @@ def run_scraping_pipeline(skip_existing: bool = False):
     db = PropertyDatabase()
     console.print("[green]✓[/green] All components initialized\n")
     
-    # Read links
-    links_file = config.LINKS_FILE
-    urls = read_links_file(links_file)
+    # STEP 1: Sync statuses from properties-status.md to database (HYBRID APPROACH)
+    console.print("[bold]Step 1: Syncing existing statuses...[/bold]")
+    updated, skipped = status_manager.sync_status_to_db(db)
+    console.print(f"[green]✓[/green] Synced {updated} statuses to database\n")
+    
+    # STEP 2: Read links from inbox
+    console.print("[bold]Step 2: Reading links from inbox...[/bold]")
+    urls = status_manager.get_links_from_inbox()
     
     if not urls:
-        console.print("[red]✗[/red] No URLs found in links file")
+        console.print("[yellow]ℹ[/yellow] No URLs found in inbox (links-to-scrap.md)")
+        console.print("[dim]Add URLs to data/links-to-scrap.md to scrape properties[/dim]\n")
+        db.close()
         return
+    
+    console.print(f"[green]✓[/green] Found {len(urls)} URLs to process\n")
     
     # Stats
     stats = {
@@ -106,7 +115,8 @@ def run_scraping_pipeline(skip_existing: bool = False):
         'inserted': 0,
         'updated': 0,
         'failed': 0,
-        'skipped': 0
+        'skipped': 0,
+        'moved_to_tracking': 0
     }
     
     # Process properties
@@ -128,8 +138,16 @@ def run_scraping_pipeline(skip_existing: bool = False):
             
             if status == 'inserted':
                 stats['inserted'] += 1
+                # Add to tracking file and remove from inbox
+                status_manager.append_to_status_file(url, '')
+                status_manager.remove_from_inbox(url)
+                stats['moved_to_tracking'] += 1
             elif status == 'updated':
                 stats['updated'] += 1
+                # Also add to tracking if not there and remove from inbox
+                status_manager.append_to_status_file(url, '')
+                status_manager.remove_from_inbox(url)
+                stats['moved_to_tracking'] += 1
             elif status == 'failed':
                 stats['failed'] += 1
         

@@ -71,11 +71,13 @@ web-house-scraper/
 │   │   └── database.py             # SQLite con UPSERT
 │   │
 │   └── 📁 utils/                    # Utilidades
-│       └── config.py               # Configuración central
+│       ├── config.py               # Configuración central
+│       └── status_manager.py       # Gestión de archivos de estado
 │
 ├── 📁 data/                         # Datos y configuraciones
 │   ├── properties.db               # Base de datos SQLite
-│   ├── links-to-scrap.md          # URLs a procesar
+│   ├── links-to-scrap.md          # URLs a procesar (INBOX)
+│   ├── properties-status.md       # Seguimiento con estados (TRACKING)
 │   └── site_configs.json          # Patrones de extracción por sitio
 │
 ├── 📁 scripts/                      # Scripts ejecutables
@@ -136,7 +138,63 @@ Por defecto guarda en `data/properties_export.csv`. Para cambiar el archivo:
 python scripts/main.py export --output mi_archivo.csv
 ```
 
-### 6. Ayuda
+### 6. Seguimiento de Propiedades (Status Tracking)
+
+#### Sistema de Dos Archivos
+
+El sistema usa dos archivos markdown para organizar tu workflow:
+
+- **`data/links-to-scrap.md`** - **INBOX**: URLs nuevas para scrapear (temporal)
+- **`data/properties-status.md`** - **TRACKING**: Todas las propiedades con estado de revisión (permanente)
+
+#### Marcar Propiedades
+
+Edita `data/properties-status.md` y cambia los estados:
+
+```markdown
+[ ] https://www.zonaprop.com.ar/...  # No revisada
+[YES] https://www.zonaprop.com.ar/... # Me interesa
+[NO] https://www.argenprop.com/...    # No me interesa
+[MAYBE] https://www.zonaprop.com.ar/... # Tal vez
+```
+
+#### Sincronizar Estados
+
+```bash
+# Opción 1: Sincronizar manualmente
+python scripts/main.py sync-status
+
+# Opción 2: Auto-sincroniza al scrapear
+python scripts/main.py scrape  # Sincroniza automáticamente antes de scrapear
+```
+
+#### Filtrar por Estado
+
+```bash
+# Ver solo propiedades que te interesan
+python scripts/main.py view --status YES
+
+# Ver propiedades descartadas
+python scripts/main.py view --status NO
+
+# Ver "tal vez"
+python scripts/main.py view --status MAYBE
+
+# Ver no revisadas
+python scripts/main.py view --status blank
+```
+
+#### Workflow Completo
+
+1. Agrega URLs a `data/links-to-scrap.md`
+2. Ejecuta `python scripts/main.py scrape`
+   - ✅ Scrapea las propiedades
+   - ✅ Las mueve automáticamente a `properties-status.md` con estado `[ ]`
+   - ✅ Limpia `links-to-scrap.md` automáticamente
+3. Edita estados en `properties-status.md`
+4. Próxima vez que ejecutes `scrape`, sincroniza automáticamente
+
+### 7. Ayuda
 
 Para ver todos los comandos disponibles:
 

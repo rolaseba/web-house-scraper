@@ -4,6 +4,7 @@ Contains LLM settings and extraction field definitions.
 """
 
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -11,6 +12,7 @@ load_dotenv()
 
 # Get project root directory (two levels up from src/utils/)
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+DATA_DIR = Path(PROJECT_ROOT) / "data"
 
 # LLM Configuration
 LLM_PROVIDER = os.getenv("LLM_PROVIDER", "ollama")  # Options: "ollama", "google"

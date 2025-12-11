@@ -58,6 +58,9 @@ class PropertyDatabase:
         # Add timestamp
         columns.append("scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
         
+        # Add status column for tracking
+        columns.append("status TEXT DEFAULT ''")
+        
         create_table_sql = f"""
         CREATE TABLE IF NOT EXISTS properties (
             {', '.join(columns)}
@@ -68,9 +71,31 @@ class PropertyDatabase:
             self.cursor.execute(create_table_sql)
             self.conn.commit()
             logger.info("Properties table created/verified")
+            
+            # Run migrations for existing databases
+            self._run_migrations()
+            
         except Exception as e:
             logger.error(f"Failed to create table: {e}")
             raise
+    
+    def _run_migrations(self):
+        """Run database migrations for existing databases."""
+        try:
+            # Check if status column exists
+            self.cursor.execute("PRAGMA table_info(properties)")
+            columns = [row[1] for row in self.cursor.fetchall()]
+            
+            # Add status column if it doesn't exist
+            if 'status' not in columns:
+                logger.info("Running migration: Adding status column")
+                self.cursor.execute("ALTER TABLE properties ADD COLUMN status TEXT DEFAULT ''")
+                self.conn.commit()
+                logger.info("✓ Migration complete: status column added")
+                
+        except Exception as e:
+            logger.error(f"Migration failed: {e}")
+            # Don't raise - migrations are optional upgrades
     
     def upsert_property(self, data: Dict[str, Any]) -> str:
         """
@@ -194,6 +219,68 @@ class PropertyDatabase:
         except Exception as e:
             logger.error(f"Failed to count properties: {e}")
             raise
+    
+    def update_status(self, url: str, status: str) -> bool:
+        """Update the status of a property by URL."""
+        try:
+            self.cursor.execute(
+                "UPDATE properties SET status = ? WHERE url = ?",
+                (status, url)
+            )
+            self.conn.commit()
+            return True
+        except Exception as e:
+            logger.error(f"Failed to update status for {url}: {e}")
+            return False
+    
+    def get_status_counts(self) -> Dict[str, int]:
+        """Get count of properties by status."""
+        try:
+            self.cursor.execute("""
+                SELECT 
+                    CASE 
+                        WHEN status = '' THEN 'blank'
+                        ELSE status
+                    END as status_label,
+                    COUNT(*) as count
+                FROM properties
+                GROUP BY status
+            """)
+            rows = self.cursor.fetchall()
+            
+            # Convert to dict
+            counts = {}
+            for row in rows:
+                counts[row[0]] = row[1]
+            
+            return counts
+        except Exception as e:
+            logger.error(f"Failed to get status counts: {e}")
+            return {}
+    
+    def get_properties_by_status(self, status: str) -> List[Dict[str, Any]]:
+        """Get all properties with a specific status."""
+        try:
+            # Handle 'blank' as empty string
+            if status.lower() == 'blank':
+                status = ''
+            
+            self.cursor.execute("SELECT * FROM properties WHERE status = ?", (status,))
+            rows = self.cursor.fetchall()
+            
+            # Get column names
+            columns = [description[0] for description in self.cursor.description]
+            
+            # Convert to list of dictionaries
+            properties = []
+            for row in rows:
+                properties.append(dict(zip(columns, row)))
+            
+            return properties
+        except Exception as e:
+            logger.error(f"Failed to retrieve properties by status: {e}")
+            raise
+
     
     def close(self):
         """Close the database connection."""
