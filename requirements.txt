@@ -2,4 +2,5 @@ requests
 beautifulsoup4
 python-dotenv
 playwright
+rich
 lxml
