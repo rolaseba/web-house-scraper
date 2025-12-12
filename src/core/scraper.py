@@ -79,7 +79,12 @@ class PropertyScraper:
         # Try requests first (faster)
         html = self.fetch_with_requests(url)
         
-        # Fallback to Playwright if requests failed
+        # Check if content is valid (some sites return empty/short body when blocking)
+        if html and len(html) < 1000:
+            logger.warning(f"Fetched content too short ({len(html)} chars). Treating as failure.")
+            html = None
+        
+        # Fallback to Playwright if requests failed or content was invalid
         if not html:
             logger.info("Falling back to Playwright...")
             html = self.fetch_with_playwright(url)

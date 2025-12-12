@@ -111,6 +111,65 @@
             }
         }
     },
+    "ficha.info": {
+        "name": "Ficha.info",
+        "patterns": {
+            "precio": {
+                "type": "regex",
+                "pattern": "\\\\\"Sale\\\\\":\\[\\\\\"(?:USD|ARS|\\$)\\s*([\\d.,]+)\\\\\"\\]",
+                "search_in": "html"
+            },
+            "moneda": {
+                "type": "regex",
+                "pattern": "\\\\\"Sale\\\\\":\\[\\\\\"(USD|ARS|\\$)",
+                "search_in": "html",
+                "transform": {
+                    "$": "ARS",
+                    "USD": "USD",
+                    "ARS": "ARS"
+                }
+            },
+            "metros_cuadrados_totales": {
+                "type": "regex",
+                "pattern": "\\\\\"attr\\\\\":\\\\\"total_surface\\\\\",\\\\\"value\\\\\":\\\\\"(\\d+)",
+                "search_in": "html"
+            },
+            "metros_cuadrados_cubiertos": {
+                "type": "regex",
+                "pattern": "\\\\\"attr\\\\\":\\\\\"roofed_surface\\\\\",\\\\\"value\\\\\":\\\\\"(\\d+)",
+                "search_in": "html"
+            },
+            "cantidad_dormitorios": {
+                "type": "regex",
+                "pattern": "\\\\\"attr\\\\\":\\\\\"suite_amount\\\\\",\\\\\"value\\\\\":\\\\\"(\\d+)",
+                "search_in": "html"
+            },
+            "cantidad_banos": {
+                "type": "regex",
+                "pattern": "\\\\\"attr\\\\\":\\\\\"bathroom_amount\\\\\",\\\\\"value\\\\\":\\\\\"(\\d+)",
+                "search_in": "html"
+            },
+            "tipo_operacion": {
+                "type": "regex",
+                "pattern": "\\\\\"operations\\\\\":\\{\\\\\"(Sale|Rent|TemporaryRent)\\\\\":",
+                "search_in": "html",
+                "transform": {
+                    "Sale": "venta",
+                    "Rent": "alquiler",
+                    "TemporaryRent": "alquiler_temporal"
+                }
+            },
+            "direccion": {
+                "type": "regex",
+                "pattern": "\\\\\"address\\\\\":\\\\\"([^\\\"]+)\\\\\"",
+                "search_in": "html"
+            },
+            "barrio": {
+                "type": "llm_required",
+                "note": "Extract from description or location field"
+            }
+        }
+    },
     "_comments": {
         "note": "Configuration file for site-specific data extraction",
         "pattern_types": [
