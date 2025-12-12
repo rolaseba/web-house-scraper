@@ -1,308 +1,308 @@
 # Web House Scraper
 
-Aplicación para scrapear propiedades inmobiliarias de Argenprop y Zonaprop, procesar la información con un **sistema híbrido** (extracción estructurada + LLM local) y guardarla en una base de datos SQLite.
+Application to scrape real estate properties from Argenprop and Zonaprop, process the information with a **hybrid system** (structured extraction + local LLM) and save it in a SQLite database.
 
-## Características
+## Features
 
-- 🔍 Scraping de propiedades desde Argenprop y Zonaprop
-- 🎯 **Sistema Híbrido de Extracción**:
-  - Extracción estructurada con regex/CSS para campos numéricos (100% precisión)
-  - LLM (Ollama) solo para campos complejos (direcciones, descripciones)
-- ⚙️ **Configuración por Sitio**: Patrones definidos en `data/site_configs.json` (sin modificar código)
-- 🤖 Procesamiento inteligente con LLM (Ollama o Google Gemini)
-- 💾 Almacenamiento en SQLite con funcionalidad **UPSERT** (insert/update)
-- 🛡️ Manejo de anti-scraping mediante Playwright
-- 📦 **Estructura Profesional**: Organizado según mejores prácticas de Python
+- 🔍 Property scraping from Argenprop and Zonaprop
+- 🎯 **Hybrid Extraction System**:
+  - Structured extraction with regex/CSS for numeric fields (100% precision)
+  - LLM (Ollama) only for complex fields (addresses, descriptions)
+- ⚙️ **Per-Site Configuration**: Patterns defined in `data/site_configs.json` (no code modification required)
+- 🤖 Intelligent processing with LLM (Ollama or Google Gemini)
+- 💾 SQLite storage with **UPSERT** functionality (insert/update)
+- 🛡️ Anti-scraping handling via Playwright
+- 📦 **Professional Structure**: Organized according to Python best practices
 
-## Requisitos
+## Requirements
 
 - Python 3.8+
-- Ollama instalado y corriendo localmente (por defecto)
-- Sistema operativo: Linux, macOS, Windows
+- Ollama installed and running locally (default)
+- Operating System: Linux, macOS, Windows
 
-## Instalación
+## Installation
 
-1. **Clonar el repositorio**
+1. **Clone the repository**
 
 ```bash
 cd /home/seba/Documentos/Data\ Science\ Projects/web-house-scraper
 ```
 
-2. **Crear entorno virtual**
+2. **Create virtual environment**
 
 ```bash
 python3 -m venv venv
-source venv/bin/activate  # En Windows: venv\Scripts\activate
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-3. **Instalar dependencias**
+3. **Install dependencies**
 
 ```bash
 pip install -r requirements.txt
 playwright install chromium
 ```
 
-4. **Configurar variables de entorno**
+4. **Configure environment variables**
 
 ```bash
 cp .env.example .env
-# Editar .env si es necesario
+# Edit .env if necessary
 ```
 
-5. **Asegurar que Ollama esté corriendo**
+5. **Ensure Ollama is running**
 
 ```bash
-ollama serve  # En otra terminal
-ollama pull deepseek-r1:latest  # Descargar el modelo
+ollama serve  # In another terminal
+ollama pull deepseek-r1:latest  # Download the model
 ```
 
-## Estructura del Proyecto
+## Project Structure
 
 ```
 web-house-scraper/
 │
-├── 📁 src/                          # Código fuente
-│   ├── 📁 core/                     # Lógica principal
+├── 📁 src/                          # Source code
+│   ├── 📁 core/                     # Core logic
 │   │   ├── scraper.py              # Web scraping
-│   │   ├── llm_processor.py        # Procesamiento híbrido LLM
-│   │   └── structured_extractor.py # Extracción estructurada
+│   │   ├── llm_processor.py        # Hybrid LLM processing
+│   │   └── structured_extractor.py # Structured extraction
 │   │
-│   ├── 📁 database/                 # Capa de datos
-│   │   └── database.py             # SQLite con UPSERT
+│   ├── 📁 database/                 # Data layer
+│   │   └── database.py             # SQLite with UPSERT
 │   │
-│   └── 📁 utils/                    # Utilidades
-│       ├── config.py               # Configuración central
-│       └── status_manager.py       # Gestión de archivos de estado
+│   └── 📁 utils/                    # Utilities
+│       ├── config.py               # Central configuration
+│       └── status_manager.py       # Status file management
 │
-├── 📁 data/                         # Datos y configuraciones
-│   ├── properties.db               # Base de datos SQLite
-│   ├── links-to-scrap.md          # URLs a procesar (INBOX)
-│   ├── properties-status.md       # Seguimiento con estados (TRACKING)
-│   └── site_configs.json          # Patrones de extracción por sitio
+├── 📁 data/                         # Data and configurations
+│   ├── properties.db               # SQLite database
+│   ├── links-to-scrap.md          # URLs to process (INBOX)
+│   ├── properties-status.md       # Status tracking (TRACKING)
+│   └── site_configs.json          # Extraction patterns per site
 │
-├── 📁 scripts/                      # Scripts ejecutables
-│   └── main.py                     # CLI principal (Typer)
+├── 📁 scripts/                      # Executable scripts
+│   └── main.py                     # Main CLI (Typer)
 │
-├── 📁 tests/                        # Tests (preparado para el futuro)
+├── 📁 tests/                        # Tests (future proof)
 │
-├── .env                             # Variables de entorno (privado)
-├── .env.example                     # Ejemplo de configuración
-├── requirements.txt                 # Dependencias Python
-└── README.md                        # Esta documentación
+├── .env                             # Environment variables (private)
+├── .env.example                     # Configuration example
+├── requirements.txt                 # Python dependencies
+└── README.md                        # This documentation
 ```
 
-## Uso Rápido
+## Quick Usage
 
-### 1. Agregar URLs
+### 1. Add URLs
 
-Edita `data/links-to-scrap.md` y agrega URLs (una por línea):
+Edit `data/links-to-scrap.md` and add URLs (one per line):
 
 ```
 https://www.zonaprop.com.ar/propiedades/...
 https://www.argenprop.com/departamento-en-venta...
 ```
 
-### 2. Ejecutar el scraper
+### 2. Run the scraper
 
 ```bash
 python scripts/main.py scrape
 ```
 
-Para saltar propiedades ya existentes:
+To skip existing properties:
 
 ```bash
 python scripts/main.py scrape --skip-existing
 ```
 
-### 3. Ver resultados
+### 3. View results
 
 ```bash
 python scripts/main.py view
 ```
 
-### 4. Ver estadísticas
+### 4. View statistics
 
 ```bash
 python scripts/main.py stats
 ```
 
-### 5. Exportar a CSV
+### 5. Export to CSV
 
 ```bash
 python scripts/main.py export
 ```
 
-Por defecto guarda en `data/properties_export.csv`. Para cambiar el archivo:
+Default saves to `data/properties_export.csv`. To change the file:
 
 ```bash
-python scripts/main.py export --output mi_archivo.csv
+python scripts/main.py export --output my_file.csv
 ```
 
-### 6. Seguimiento de Propiedades (Status Tracking)
+### 6. Property Status Tracking
 
-#### Sistema de Dos Archivos
+#### Two-File System
 
-El sistema usa dos archivos markdown para organizar tu workflow:
+The system uses two markdown files to organize your workflow:
 
-- **`data/links-to-scrap.md`** - **INBOX**: URLs nuevas para scrapear (temporal)
-- **`data/properties-status.md`** - **TRACKING**: Todas las propiedades con estado de revisión (permanente)
+- **`data/links-to-scrap.md`** - **INBOX**: New URLs to scrape (temporary)
+- **`data/properties-status.md`** - **TRACKING**: All properties with review status (permanent)
 
-#### Marcar Propiedades
+#### Mark Properties
 
-Edita `data/properties-status.md` y cambia los estados:
+Edit `data/properties-status.md` and change the statuses:
 
 ```markdown
-[ ] https://www.zonaprop.com.ar/...  # No revisada
-[YES] https://www.zonaprop.com.ar/... # Me interesa
-[NO] https://www.argenprop.com/...    # No me interesa
-[MAYBE] https://www.zonaprop.com.ar/... # Tal vez
+[ ] https://www.zonaprop.com.ar/...  # Not reviewed
+[YES] https://www.zonaprop.com.ar/... # Interested
+[NO] https://www.argenprop.com/...    # Not interested
+[MAYBE] https://www.zonaprop.com.ar/... # Maybe
 ```
 
-#### Sincronizar Estados
+#### Sync Statuses
 
 ```bash
-# Opción 1: Sincronizar manualmente
+# Option 1: Sync manually
 python scripts/main.py sync-status
 
-# Opción 2: Auto-sincroniza al scrapear
-python scripts/main.py scrape  # Sincroniza automáticamente antes de scrapear
+# Option 2: Auto-sync when scraping
+python scripts/main.py scrape  # Automatically syncs before scraping
 ```
 
-#### Filtrar por Estado
+#### Filter by Status
 
 ```bash
-# Ver solo propiedades que te interesan
+# View only interested properties
 python scripts/main.py view --status YES
 
-# Ver propiedades descartadas
+# View discarded properties
 python scripts/main.py view --status NO
 
-# Ver "tal vez"
+# View "maybe"
 python scripts/main.py view --status MAYBE
 
-# Ver no revisadas
+# View not reviewed
 python scripts/main.py view --status blank
 ```
 
-#### Workflow Completo
+#### Complete Workflow
 
-1. Agrega URLs a `data/links-to-scrap.md`
-2. Ejecuta `python scripts/main.py scrape`
-   - ✅ Scrapea las propiedades
-   - ✅ Las mueve automáticamente a `properties-status.md` con estado `[ ]`
-   - ✅ Limpia `links-to-scrap.md` automáticamente
-3. Edita estados en `properties-status.md`
-4. Próxima vez que ejecutes `scrape`, sincroniza automáticamente
+1. Add URLs to `data/links-to-scrap.md`
+2. Run `python scripts/main.py scrape`
+   - ✅ Scrapes properties
+   - ✅ Automatically moves them to `properties-status.md` with status `[ ]`
+   - ✅ Automatically clears `links-to-scrap.md`
+3. Edit statuses in `properties-status.md`
+4. Next time you run `scrape`, it syncs automatically
 
-### 7. Ayuda
+### 7. Help
 
-Para ver todos los comandos disponibles:
+To see all available commands:
 
 ```bash
 python scripts/main.py --help
 ```
 
-O ayuda específica de un comando:
+Or specific command help:
 
 ```bash
 python scripts/main.py scrape --help
 ```
 
-O acceder directamente a la base de datos:
+Or access the database directly:
 
 ```bash
 sqlite3 data/properties.db "SELECT * FROM properties;"
 ```
 
-## Configuración
+## Configuration
 
-### Campos Extraídos
+### Extracted Fields
 
-El sistema extrae **21 campos** automáticamente (definidos en `src/utils/config.py`):
+The system automatically extracts **21 fields** (defined in `src/utils/config.py`):
 
-**Básicos:**
-- `tipo_operacion` (venta/alquiler)
-- `tipo_inmueble` (casa/departamento)
-- `direccion`
-- `barrio`
+**Basic:**
+- `tipo_operacion` (sale/rent)
+- `tipo_inmueble` (house/apartment)
+- `direccion` (address)
+- `barrio` (neighborhood)
 
-**Medidas:**
-- `metros_cuadrados_cubiertos`
-- `metros_cuadrados_totales`
-- `precio`
-- `moneda` (USD/ARS)
+**Measurements:**
+- `metros_cuadrados_cubiertos` (covered sq meters)
+- `metros_cuadrados_totales` (total sq meters)
+- `precio` (price)
+- `moneda` (currency USD/ARS)
 
-**Distribución:**
-- `cantidad_dormitorios`
-- `cantidad_banos`
-- `cantidad_ambientes`
+**Distribution:**
+- `cantidad_dormitorios` (bedrooms)
+- `cantidad_banos` (bathrooms)
+- `cantidad_ambientes` (rooms)
 
-**Características booleanas:**
-- `tiene_patio`
-- `tiene_quincho`
-- `tiene_pileta`
-- `tiene_cochera`
-- `tiene_balcon`
-- `tiene_terraza`
+**Boolean Features:**
+- `tiene_patio` (has patio)
+- `tiene_quincho` (has bbq area)
+- `tiene_pileta` (has pool)
+- `tiene_cochera` (has garage)
+- `tiene_balcon` (has balcony)
+- `tiene_terraza` (has terrace)
 
-**Detalles adicionales:**
-- `piso` (PB, 1, 2, 3... o 0 para casas)
-- `orientacion` (Norte, Sur, Este, Oeste)
-- `antiguedad`
-- `descripcion_breve`
+**Additional Details:**
+- `piso` (floor: PB, 1, 2, 3... or 0 for houses)
+- `orientacion` (orientation: North, South, East, West)
+- `antiguedad` (age)
+- `descripcion_breve` (short description)
 
-### Variables de Entorno (.env)
+### Environment Variables (.env)
 
 ```bash
-LLM_PROVIDER=ollama                      # ollama o google
-OLLAMA_MODEL=deepseek-r1:latest         # Modelo de Ollama
-OLLAMA_BASE_URL=http://localhost:11434  # URL base de Ollama
-GOOGLE_API_KEY=                         # Para usar Gemini (opcional)
-GEMINI_MODEL=gemini-pro                 # Modelo de Gemini
+LLM_PROVIDER=ollama                      # ollama or google
+OLLAMA_MODEL=deepseek-r1:latest         # Ollama model
+OLLAMA_BASE_URL=http://localhost:11434  # Ollama base URL
+GOOGLE_API_KEY=                         # To use Gemini (optional)
+GEMINI_MODEL=gemini-pro                 # Gemini model
 ```
 
-## Sistema Híbrido de Extracción
+## Hybrid Extraction System
 
-La aplicación usa un enfoque de **dos pasos** para máxima precisión y eficiencia:
+The application uses a **two-step** approach for maximum precision and efficiency:
 
-### Paso 1: Extracción Estructurada
+### Step 1: Structured Extraction
 
-Primero extrae campos usando **patrones regex/CSS** definidos en `data/site_configs.json`:
+First extracts fields using **regex/CSS patterns** defined in `data/site_configs.json`:
 
-✅ **100% precisión** en:
-- Precio
-- Moneda  
-- Metros cuadrados (cubiertos y totales)
-- Cantidad de dormitorios/baños
-- Tipo de operación (venta/alquiler)
+✅ **100% precision** in:
+- Price
+- Currency
+- Square meters (covered and total)
+- Number of bedrooms/bathrooms
+- Operation type (sale/rent)
 
-### Paso 2: Procesamiento LLM
+### Step 2: LLM Processing
 
-Luego usa el **LLM solo para campos complejos**:
-- Dirección completa
-- Barrio/zona
-- Características (patio, quincho, pileta, balcón, terraza, etc.)
-- Tipo de inmueble
-- Orientación
-- Piso
-- Descripción breve
-- Antigüedad
+Then uses the **LLM only for complex fields**:
+- Full address
+- Neighborhood/zone
+- Features (patio, bbq, pool, balcony, terrace, etc.)
+- Property type
+- Orientation
+- Floor
+- Short description
+- Age
 
-### Ventajas
+### Advantages
 
-- ⚡ **100% precisión** en campos numéricos
-- 🚀 **Más rápido**: LLM procesa solo ~40% de los campos
-- 🔧 **Mantenible**: Patrones en JSON, no en código
-- 📈 **Escalable**: Fácil agregar nuevos sitios
+- ⚡ **100% precision** in numeric fields
+- 🚀 **Faster**: LLM processes only ~40% of fields
+- 🔧 **Maintainable**: Patterns in JSON, not in code
+- 📈 **Scalable**: Easy to add new sites
 
-### Agregar Nuevo Sitio
+### Add New Site
 
-Edita `data/site_configs.json` y agrega configuración:
+Edit `data/site_configs.json` and add configuration:
 
 ```json
 {
-  "nuevositio.com": {
-    "name": "Nuevo Sitio",
+  "newsite.com": {
+    "name": "New Site",
     "structured_fields": ["precio", "moneda", "cantidad_dormitorios"],
     "llm_fields": ["direccion", "barrio", "descripcion_breve"],
     "patterns": {
@@ -321,20 +321,20 @@ Edita `data/site_configs.json` y agrega configuración:
 }
 ```
 
-## Funcionalidad UPSERT
+## UPSERT Functionality
 
-El sistema implementa **UPSERT** (Update or Insert) automático:
+The system implements automatic **UPSERT** (Update or Insert):
 
-### Comportamiento
+### Behavior
 
-Cuando ejecutas la app con un link que ya existe en la base de datos:
+When you run the app with a link that already exists in the database:
 
-- ✅ **Se actualiza** la propiedad con los nuevos datos extraídos
-- ✅ **Se actualiza** el timestamp `scraped_at` automáticamente  
-- ✅ El terminal muestra claramente: `🔄 Updated property`
-- ✅ El resumen final distingue entre "New properties" y "Updated properties"
+- ✅ Property is **updated** with new extracted data
+- ✅ `scraped_at` timestamp is **updated** automatically
+- ✅ Terminal clearly shows: `🔄 Updated property`
+- ✅ Final summary distinguishes between "New properties" and "Updated properties"
 
-### Ejemplo de Output
+### Output Example
 
 ```
 [1/5] Processing: https://www.zonaprop.com.ar/...
@@ -345,64 +345,64 @@ SUMMARY
 ================================================================================
 Total URLs:           5
 New properties:       0
-Updated properties:   5    👈 Todas actualizadas
+Updated properties:   5    👈 All updated
 Failed:               0
 ```
 
-### Casos de Uso
+### Use Cases
 
-- 📊 Actualizar precios que cambian
-- 🔄 Refrescar características modificadas
-- 📈 Hacer seguimiento temporal de propiedades
-- 🔍 Monitoreo continuo del mercado
+- 📊 Update changing prices
+- 🔄 Refresh modified features
+- 📈 Track properties over time
+- 🔍 Continuous market monitoring
 
-## Solución de Problemas
+## Troubleshooting
 
 ### Error: "externally-managed-environment"
 
-**Solución**: Usar entorno virtual (ver instalación).
+**Solution**: Use virtual environment (see installation).
 
 ### Error: "Links file not found"
 
-**Causa**: Archivo `data/links-to-scrap.md` no existe o está vacío.
+**Cause**: File `data/links-to-scrap.md` does not exist or is empty.
 
-**Solución**: 
+**Solution**:
 ```bash
 echo "https://www.zonaprop.com.ar/..." > data/links-to-scrap.md
 ```
 
-### Timeout en scraping
+### Scraping Timeout
 
-**Causa**: Algunas páginas pueden tardar en cargar.
+**Cause**: Some pages may take time to load.
 
-**Solución**: Ajustar timeout en `src/core/scraper.py` (línea ~40).
+**Solution**: Adjust timeout in `src/core/scraper.py` (line ~40).
 
-### LLM no responde
+### LLM not responding
 
-**Verificar que Ollama esté corriendo**:
+**Verify Ollama is running**:
 ```bash
-ollama list  # Ver modelos instalados
-ollama serve # Iniciar servidor
+ollama list  # View installed models
+ollama serve # Start server
 ```
 
 ### Error 403 Forbidden
 
-**Normal**: Zonaprop usa protección anti-scraping.
+**Normal**: Zonaprop uses anti-scraping protection.
 
-**Solución automática**: El sistema usa Playwright como fallback (ya implementado).
+**Automatic Solution**: System uses Playwright as fallback (already implemented).
 
-## Notas Importantes
+## Important Notes
 
-- 🔒 **Anti-scraping**: Zonaprop usa protección 403 → Se resuelve automáticamente con Playwright
-- 🤖 **LLM Local**: Asegúrate de que Ollama esté corriendo: `ollama serve`
-- 📦 **Modelo**: Por defecto usa `deepseek-r1:latest` → Descárgalo con: `ollama pull deepseek-r1:latest`
-- 💰 **APIs Pagas**: Para usar Google Gemini, configura `GOOGLE_API_KEY` en `.env`
-- 🔄 **UPSERT**: Re-ejecutar con los mismos links **actualiza** los datos automáticamente
-- 📁 **Estructura**: Proyecto organizado según Python best practices (src/, data/, scripts/)
+- 🔒 **Anti-scraping**: Zonaprop uses 403 protection → Automatically resolved with Playwright
+- 🤖 **Local LLM**: Ensure Ollama is running: `ollama serve`
+- 📦 **Model**: Defaults to `deepseek-r1:latest` → Download with: `ollama pull deepseek-r1:latest`
+- 💰 **Paid APIs**: To use Google Gemini, configure `GOOGLE_API_KEY` in `.env`
+- 🔄 **UPSERT**: Re-running with same links **updates** data automatically
+- 📁 **Structure**: Project organized according to Python best practices (src/, data/, scripts/)
 
-## Ejemplos de Ejecución
+## Execution Examples
 
-### Activar entorno y ejecutar
+### Activate environment and run
 
 ```bash
 cd /home/seba/Documentos/Data\ Science\ Projects/web-house-scraper
@@ -410,13 +410,13 @@ source venv/bin/activate
 python scripts/main.py scrape
 ```
 
-### Ver propiedades formateadas
+### View formatted properties
 
 ```bash
 python scripts/main.py view
 ```
 
-### Consulta SQL directa
+### Direct SQL query
 
 ```bash
 sqlite3 data/properties.db
@@ -424,15 +424,15 @@ sqlite3 data/properties.db
 > .quit
 ```
 
-## Contribuir
+## Contributing
 
-Para contribuir al proyecto:
+To contribute to the project:
 
-1. Crear feature branch
-2. Agregar tests en `tests/`
-3. Actualizar documentación si es necesario
-4. Enviar pull request
+1. Create feature branch
+2. Add tests in `tests/`
+3. Update documentation if necessary
+4. Submit pull request
 
-## Licencia
+## License
 
 MIT
