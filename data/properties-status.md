@@ -2,10 +2,11 @@
 
 <!-- Status tags: [ ] = Not reviewed, [YES] = Interested, [NO] = Not interested, [MAYBE] = Maybe -->
 
-
-[MAYBE] https://www.zonaprop.com.ar/propiedades/clasificado/veclphin-casa-de-pasillo-reciclada-de-3-dorm.-con-patio-y-56598216.html
-[YES] https://www.zonaprop.com.ar/propiedades/clasificado/veclapin-departamento-en-venta-1-dormitorio-rosario-lourdes-55563190.html
-[NO] https://www.zonaprop.com.ar/propiedades/clasificado/veclcain-casa-de-pasillo-unico-de-3-dorm.-con-patio-y-terraza-57854262.html
-[ ] https://www.argenprop.com/departamento-en-venta-en-centro-6-ambientes--18157682
-[ ] https://www.argenprop.com/departamento-en-venta-en-luis-agote-3-ambientes--17849475
-[ ] https://www.zonaprop.com.ar/propiedades/clasificado/veclcain-venta-casa-3-4-dorm.-barrio-parque-rosario-54487690.html
+[YES] https://ficha.info/p/930fb60e42a44d56a3da706dca24f6ae
+[MAYBE] https://www.argenprop.com/casa-en-venta-en-echesortu-5-ambientes--18407594
+[ ] https://www.argenprop.com/departamento-en-venta-en-centro-4-ambientes--15224298
+[ ] https://www.argenprop.com/departamento-en-venta-en-centro-4-ambientes--8492393
+[ ] https://www.argenprop.com/departamento-en-venta-en-centro-4-ambientes--8451690
+[ ] https://www.argenprop.com/casa-en-venta-en-centro-3-ambientes--18485942
+[ ] https://www.argenprop.com/casa-en-venta-en-centro-6-ambientes--16956589
+[ ] https://www.argenprop.com/casa-en-venta-en-centro-6-ambientes--12375391
