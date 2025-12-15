@@ -73,4 +73,5 @@ dmypy.json
 data/*.db
 data/*.sqlite
 data/*.sqlite3
-data/properties_export.csv
+data/properties-status.md
+data/links-to-scrap.md
