@@ -114,7 +114,8 @@ class StructuredExtractor:
                         lower_val = value.lower()
                         value = lower_val not in ["0", "no", "false", "none"]
             
-            return value
+            # Return extracted value or default if defined
+            return value if value is not None else field_config.get('default')
         
         elif pattern_type == 'css_selector':
             selector = field_config['selector']
@@ -140,7 +141,8 @@ class StructuredExtractor:
                         lower_val = value.lower()
                         value = lower_val not in ["0", "no", "false", "none"]
             
-            return value
+            # Return extracted value or default if defined
+            return value if value is not None else field_config.get('default')
         
         return None
     
