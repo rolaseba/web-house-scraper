@@ -167,6 +167,42 @@
             "barrio": {
                 "type": "llm_required",
                 "note": "Extract from description or location field"
+            },
+            "tiene_patio": {
+                "type": "regex",
+                "pattern": "\\\\\"(Patio)\\\\\"",
+                "search_in": "html",
+                "default": false
+            },
+            "tiene_terraza": {
+                "type": "regex",
+                "pattern": "\\\\\"(Terraza|Balcón terraza|Aterrazado)\\\\\"",
+                "search_in": "html",
+                "default": false
+            },
+            "tiene_balcon": {
+                "type": "regex",
+                "pattern": "\\\\\"(Balcón)\\\\\"",
+                "search_in": "html",
+                "default": false
+            },
+            "tiene_cochera": {
+                "type": "regex",
+                "pattern": "\\\\\"(Cochera|parking_lot_amount)\\\\\"",
+                "search_in": "html",
+                "default": false
+            },
+            "tiene_pileta": {
+                "type": "regex",
+                "pattern": "\\\\\"(Pileta|Piscina)\\\\\"",
+                "search_in": "html",
+                "default": false
+            },
+            "tiene_quincho": {
+                "type": "regex",
+                "pattern": "\\\\\"(Quincho|Parrilla)\\\\\"",
+                "search_in": "html",
+                "default": false
             }
         }
     },
