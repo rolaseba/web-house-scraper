@@ -21,7 +21,7 @@ const typeMapping = {
 
 async function fetchProperties() {
     try {
-        const response = await fetch('properties_export.csv');
+        const response = await fetch('properties_export.csv?t=' + new Date().getTime());
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -233,6 +233,12 @@ function createTableRow(property, index) {
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                 </svg>
             </a>
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                  ${getStatusStyle(property.status)}">
+                ${getStatusLabel(property.status)}
+            </span>
         </td>
         <td class="px-6 py-4 whitespace-nowrap">
             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
@@ -644,6 +650,21 @@ function clearSelection() {
     updateSelectionUI();
     updateComparisonButton();
     loadProperties();
+}
+
+// Helpers para el estado
+function getStatusStyle(status) {
+    switch (status) {
+        case 'YES': return 'bg-green-100 text-green-800';
+        case 'MAYBE': return 'bg-yellow-100 text-yellow-800';
+        case 'NO': return 'bg-red-100 text-red-800';
+        default: return 'bg-gray-100 text-gray-800';
+    }
+}
+
+function getStatusLabel(status) {
+    if (!status || status === 'NO_STATUS') return '-';
+    return status;
 }
 
 // Inicializar cuando el DOM esté listo

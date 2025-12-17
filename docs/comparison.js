@@ -125,12 +125,16 @@ function createPropertyCard(property, index) {
         </div>
         
         <div class="space-y-3">
-            <div>
+            <div class="flex gap-2">
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                       ${property.tipo_inmueble === 'casa' ? 'bg-green-100 text-green-800' :
             property.tipo_inmueble === 'departamento' ? 'bg-blue-100 text-blue-800' :
                 'bg-purple-100 text-purple-800'}">
                     ${property.tipo_inmueble}
+                </span>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                      ${getStatusStyle(property.status)}">
+                    ${getStatusLabel(property.status)}
                 </span>
             </div>
             
@@ -237,6 +241,8 @@ function displayComparisonTable() {
                 formattedValue = value.toString();
             } else if (feature.format === 'boolean') {
                 formattedValue = value ? 'Sí' : 'No';
+            } else if (feature.key === 'status') {
+                formattedValue = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusStyle(value)}">${getStatusLabel(value)}</span>`;
             } else if (value === null || value === undefined || value === '') {
                 formattedValue = '-';
             }
@@ -607,6 +613,21 @@ window.addEventListener('resize', function () {
         chart.resize();
     });
 });
+
+// Helpers para el estado
+function getStatusStyle(status) {
+    switch (status) {
+        case 'YES': return 'bg-green-100 text-green-800';
+        case 'MAYBE': return 'bg-yellow-100 text-yellow-800';
+        case 'NO': return 'bg-red-100 text-red-800';
+        default: return 'bg-gray-100 text-gray-800';
+    }
+}
+
+function getStatusLabel(status) {
+    if (!status || status === 'NO_STATUS') return '-';
+    return status;
+}
 
 // Limpiar datos al salir de la página
 window.addEventListener('beforeunload', function () {
