@@ -94,14 +94,25 @@ class StructuredExtractor:
             value = self.extract_with_regex(pattern, content, transform)
             
             # Try to convert to appropriate type
-            if value and field_name in ['metros_cuadrados_cubiertos', 'metros_cuadrados_totales', 
-                                        'cantidad_dormitorios', 'cantidad_banos', 'precio']:
-                try:
-                    # Remove commas and convert to number
-                    value = value.replace(',', '').replace('.', '')
-                    value = int(value)
-                except ValueError:
-                    pass
+            if value:
+                if field_name in ['metros_cuadrados_cubiertos', 'metros_cuadrados_totales', 
+                                'cantidad_dormitorios', 'cantidad_banos', 'precio']:
+                    try:
+                        # Remove commas and convert to number
+                        value = value.replace(',', '').replace('.', '')
+                        value = int(value)
+                    except ValueError:
+                        pass
+                
+                elif field_name in ['tiene_cochera', 'tiene_patio', 'tiene_quincho', 'tiene_pileta', 'tiene_balcon', 'tiene_terraza']:
+                    try:
+                        # Convert to boolean based on numeric value
+                        num_value = int(value)
+                        value = num_value > 0
+                    except ValueError:
+                        # If not a number, assume True if text is present and not "0" or "no"
+                        lower_val = value.lower()
+                        value = lower_val not in ["0", "no", "false", "none"]
             
             return value
         
@@ -113,13 +124,21 @@ class StructuredExtractor:
             value = self.extract_with_css(soup, selector, regex, transform)
             
             # Try to convert to number if needed
-            if value and field_name in ['metros_cuadrados_cubiertos', 'metros_cuadrados_totales', 
-                                        'cantidad_dormitorios', 'cantidad_banos', 'precio']:
-                try:
-                    value = value.replace(',', '').replace('.', '')
-                    value = int(value)
-                except ValueError:
-                    pass
+            if value:
+                if field_name in ['metros_cuadrados_cubiertos', 'metros_cuadrados_totales', 
+                                'cantidad_dormitorios', 'cantidad_banos', 'precio']:
+                    try:
+                        value = value.replace(',', '').replace('.', '')
+                        value = int(value)
+                    except ValueError:
+                        pass
+                elif field_name in ['tiene_cochera', 'tiene_patio', 'tiene_quincho', 'tiene_pileta', 'tiene_balcon', 'tiene_terraza']:
+                    try:
+                        num_value = int(value)
+                        value = num_value > 0
+                    except ValueError:
+                        lower_val = value.lower()
+                        value = lower_val not in ["0", "no", "false", "none"]
             
             return value
         

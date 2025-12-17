@@ -170,6 +170,66 @@
             }
         }
     },
+    "alagnapropiedades.com.ar": {
+        "name": "Alagna Propiedades",
+        "patterns": {
+            "precio": {
+                "type": "regex",
+                "pattern": "Precio de Venta: U\\$S\\s*([\\d.,]+)",
+                "search_in": "text"
+            },
+            "moneda": {
+                "type": "regex",
+                "pattern": "(U\\$S)",
+                "search_in": "text",
+                "transform": {
+                    "U$S": "USD"
+                }
+            },
+            "metros_cuadrados_totales": {
+                "type": "regex",
+                "pattern": "Superficie Total\\s*(\\d+)(?:[.,]\\d+)?\\s*m\\s*2",
+                "search_in": "text"
+            },
+            "metros_cuadrados_cubiertos": {
+                "type": "regex",
+                "pattern": "Superficie cubierta:\\s*(\\d+)(?:[.,]\\d+)?\\s*m\\s*2",
+                "search_in": "text"
+            },
+            "cantidad_dormitorios": {
+                "type": "regex",
+                "pattern": "Dormitorios\\s*(\\d+)",
+                "search_in": "text"
+            },
+            "cantidad_banos": {
+                "type": "regex",
+                "pattern": "Baños\\s*(\\d+)",
+                "search_in": "text"
+            },
+            "tiene_cochera": {
+                "type": "regex",
+                "pattern": "Cochera\\s*(\\d+)",
+                "search_in": "text"
+            },
+            "tipo_operacion": {
+                "type": "regex",
+                "pattern": "(venta|alquiler)",
+                "search_in": "url",
+                "transform": {
+                    "venta": "venta",
+                    "alquiler": "alquiler"
+                }
+            },
+            "barrio": {
+                "type": "llm_required",
+                "note": "Extract from description"
+            },
+            "direccion": {
+                "type": "llm_required",
+                "note": "Extract from description"
+            }
+        }
+    },
     "_comments": {
         "note": "Configuration file for site-specific data extraction",
         "pattern_types": [

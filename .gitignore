@@ -75,3 +75,4 @@ data/*.sqlite
 data/*.sqlite3
 data/properties-status.md
 data/links-to-scrap.md
+data/backup
