@@ -159,6 +159,18 @@
                     "TemporaryRent": "alquiler_temporal"
                 }
             },
+            "tipo_inmueble": {
+                "type": "regex",
+                "pattern": "\\\\\"type\\\\\":\\{\\\\\"id\\\\\":\\d+,\\\\\"name\\\\\":\\\\\"([^\\\"]+)\\\\\"",
+                "search_in": "html",
+                "transform": {
+                    "Departamento": "departamento",
+                    "Casa": "casa",
+                    "PH": "casa",
+                    "Local": "local",
+                    "Oficina": "oficina"
+                }
+            },
             "direccion": {
                 "type": "regex",
                 "pattern": "\\\\\"address\\\\\":\\\\\"([^\\\"]+)\\\\\"",

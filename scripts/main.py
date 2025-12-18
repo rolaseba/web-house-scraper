@@ -31,13 +31,23 @@ def export(
         "data/properties_export.csv",
         "--output",
         "-o",
-        help="Path to the output CSV file."
+        help="Path to the primary output CSV file."
     )
 ):
     """
     Export database to CSV.
     """
     export_to_csv(output)
+    
+    # Also sync to docs/ for the web interface
+    if output == "data/properties_export.csv":
+        docs_path = "docs/properties_export.csv"
+        import shutil
+        try:
+            shutil.copy2(output, docs_path)
+            console.print(f"[green]✓[/green] Synced export to [bold]{docs_path}[/bold]")
+        except Exception as e:
+            console.print(f"[red]✗[/red] Failed to sync to docs: {e}")
 
 @app.command()
 def stats():
