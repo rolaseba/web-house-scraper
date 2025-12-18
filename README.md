@@ -52,13 +52,43 @@ cp .env.example .env
 5. **Ensure Ollama is running**
 
 ```bash
-ollama serve  # In another terminal
-ollama pull deepseek-r1:latest  # Download the model
-```
+1.  **Clone the repository**
+
+    ```bash
+    cd /home/seba/Documentos/Data\ Science\ Projects/web-house-scraper
+    ```
+
+2.  **Create virtual environment**
+
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate  # On Windows: venv\Scripts\activate
+    ```
+
+3.  **Install dependencies**
+
+    ```bash
+    pip install -r requirements.txt
+    playwright install chromium
+    ```
+
+4.  **Configure environment variables**
+
+    ```bash
+    cp .env.example .env
+    # Edit .env if necessary
+    ```
+
+5.  **Ensure Ollama is running**
+
+    ```bash
+    ollama serve  # In another terminal
+    ollama pull deepseek-r1:latest  # Download the model
+    ```
 
 ## Project Structure
 
-```
+```text
 web-house-scraper/
 │
 ├── 📁 src/                          # Source code
@@ -77,7 +107,9 @@ web-house-scraper/
 ├── 📁 data/                         # Data and configurations
 │   ├── properties.db               # SQLite database
 │   ├── links-to-scrap.md          # URLs to process (INBOX)
+│   ├── links-to-scrap-example.md  # Example URLs (VERSIONED)
 │   ├── properties-status.md       # Status tracking (TRACKING)
+│   ├── properties-status-example.md # Example statuses (VERSIONED)
 │   └── site_configs.json          # Extraction patterns per site
 │
 ├── 📁 scripts/                      # Executable scripts
@@ -95,9 +127,11 @@ web-house-scraper/
 
 ### 1. Add URLs
 
-Edit `data/links-to-scrap.md` and add URLs (one per line):
+Edit `data/links-to-scrap.md` and add URLs (one per line).
+> [!TIP]
+> If the file does not exist, you can create it by copying `data/links-to-scrap-example.md`.
 
-```
+```markdown
 https://www.zonaprop.com.ar/propiedades/...
 https://www.argenprop.com/departamento-en-venta...
 ```
@@ -146,6 +180,9 @@ The system uses two markdown files to organize your workflow:
 
 - **`data/links-to-scrap.md`** - **INBOX**: New URLs to scrape (temporary)
 - **`data/properties-status.md`** - **TRACKING**: All properties with review status (permanent)
+
+> [!NOTE]
+> These files are ignored by Git to keep your data private. Examples of these files are provided as `data/links-to-scrap-example.md` and `data/properties-status-example.md`. You should create the real files from these examples.
 
 #### Mark Properties
 
@@ -336,7 +373,7 @@ When you run the app with a link that already exists in the database:
 
 ### Output Example
 
-```
+```text
 [1/5] Processing: https://www.zonaprop.com.ar/...
 INFO:src.database.database:🔄 Updated property: https://www.zonaprop.com.ar/...
 INFO:__main__:✓ Successfully updated existing property
@@ -367,6 +404,14 @@ Failed:               0
 **Cause**: File `data/links-to-scrap.md` does not exist or is empty.
 
 **Solution**:
+Create the file from the example:
+
+```bash
+cp data/links-to-scrap-example.md data/links-to-scrap.md
+```
+
+Or add a link manually:
+
 ```bash
 echo "https://www.zonaprop.com.ar/..." > data/links-to-scrap.md
 ```
