@@ -68,6 +68,7 @@ def scrape(
     """
     Scrape properties from the links file.
     """
+    status_manager.ensure_data_files_exist()
     run_scraping_pipeline(skip_existing=skip_existing)
 
 @app.command()
@@ -89,6 +90,7 @@ def sync_status():
     """
     Sync property statuses from properties-status.md to database.
     """
+    status_manager.ensure_data_files_exist()
     try:
         with PropertyDatabase() as db:
             console.print("[cyan]Syncing statuses from properties-status.md...[/cyan]")

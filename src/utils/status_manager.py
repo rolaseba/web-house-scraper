@@ -22,6 +22,37 @@ STATUS_FILE = config.DATA_DIR / "properties-status.md"
 STATUS_PATTERN = re.compile(r'^\[(.*?)\]\s+(https?://\S+)', re.MULTILINE)
 
 
+def ensure_data_files_exist():
+    """
+    Check if required data files exist. If not, print error and exit.
+    """
+    from rich.console import Console
+    from rich.panel import Panel
+    import sys
+    
+    console = Console()
+    missing_files = []
+    
+    if not LINKS_FILE.exists():
+        missing_files.append(("links-to-scrap.md", "links-to-scrap-example.md"))
+    
+    if not STATUS_FILE.exists():
+        missing_files.append(("properties-status.md", "properties-status-example.md"))
+        
+    if missing_files:
+        console.print()
+        for real, example in missing_files:
+            console.print(Panel(
+                f"[red]✗[/red] Required file missing: [bold]data/{real}[/bold]\n\n"
+                f"[yellow]To fix this, create the file from the example:[/yellow]\n"
+                f"[cyan]cp data/{example} data/{real}[/cyan]",
+                title="[bold red]Missing Configuration[/bold red]",
+                border_style="red"
+            ))
+        console.print()
+        sys.exit(1)
+
+
 def parse_status_file() -> Dict[str, str]:
     """
     Parse properties-status.md and extract URL → status mapping.
