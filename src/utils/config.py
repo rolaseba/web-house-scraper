@@ -48,5 +48,6 @@ EXTRACTION_FIELDS = [
     "orientacion",  # Sur, Norte, Este, Oeste, etc.
     "antiguedad",
     "descripcion_breve",
+    "anunciante",
     "costo_metro_cuadrado",  # CALCULADO: precio / m2 ponderados
 ]

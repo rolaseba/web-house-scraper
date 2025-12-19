@@ -42,6 +42,8 @@ class PropertyDatabase:
         elif field_name in ["tiene_patio", "tiene_quincho", "tiene_pileta", "tiene_cochera",
                            "tiene_balcon", "tiene_terraza"]:
             return "BOOLEAN"
+        elif field_name in ["anunciante", "direccion", "barrio", "moneda", "tipo_operacion", "tipo_inmueble", "piso", "orientacion", "antiguedad", "descripcion_breve"]:
+            return "TEXT"
         else:
             return "TEXT"
     
@@ -92,6 +94,13 @@ class PropertyDatabase:
                 self.cursor.execute("ALTER TABLE properties ADD COLUMN status TEXT DEFAULT ''")
                 self.conn.commit()
                 logger.info("✓ Migration complete: status column added")
+            
+            # Add anunciante column if it doesn't exist
+            if 'anunciante' not in columns:
+                logger.info("Running migration: Adding anunciante column")
+                self.cursor.execute("ALTER TABLE properties ADD COLUMN anunciante TEXT DEFAULT ''")
+                self.conn.commit()
+                logger.info("✓ Migration complete: anunciante column added")
                 
         except Exception as e:
             logger.error(f"Migration failed: {e}")

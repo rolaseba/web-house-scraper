@@ -54,6 +54,11 @@
             "direccion": {
                 "type": "llm_required",
                 "note": "Requires LLM to extract address"
+            },
+            "anunciante": {
+                "type": "css_selector",
+                "selector": "h3.publisherData-module__publisher-name___6HD5R, [data-qa='linkMicrositioAnunciante']",
+                "extract": "text"
             }
         }
     },
@@ -108,6 +113,11 @@
             "direccion": {
                 "type": "llm_required",
                 "note": "Requires LLM"
+            },
+            "anunciante": {
+                "type": "css_selector",
+                "selector": ".form-details-heading",
+                "extract": "text"
             }
         }
     },
@@ -275,6 +285,52 @@
             "direccion": {
                 "type": "llm_required",
                 "note": "Extract from description"
+            }
+        }
+    },
+    "mercadolibre.com.ar": {
+        "name": "Mercado Libre",
+        "patterns": {
+            "precio": {
+                "type": "css_selector",
+                "selector": ".ui-pdp-price__main-container .andes-money-amount__fraction",
+                "extract": "text"
+            },
+            "moneda": {
+                "type": "css_selector",
+                "selector": ".ui-pdp-price__main-container .andes-money-amount__currency-symbol",
+                "extract": "text",
+                "transform": {
+                    "$": "ARS",
+                    "U$S": "USD"
+                }
+            },
+            "anunciante": {
+                "type": "css_selector",
+                "selector": "#seller_profile .ui-vip-profile-info__info-container h3 span, .ui-pdp-seller__header__title",
+                "extract": "text"
+            },
+            "tipo_operacion": {
+                "type": "regex",
+                "pattern": "(venta|alquiler)",
+                "search_in": "url",
+                "transform": {
+                    "venta": "venta",
+                    "alquiler": "alquiler"
+                }
+            },
+            "tipo_inmueble": {
+                "type": "regex",
+                "pattern": "(departamento|casa|ph|local|oficina)",
+                "search_in": "url"
+            },
+            "barrio": {
+                "type": "llm_required",
+                "note": "Requires LLM"
+            },
+            "direccion": {
+                "type": "llm_required",
+                "note": "Requires LLM"
             }
         }
     },

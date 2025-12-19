@@ -39,6 +39,10 @@ class StructuredExtractor:
         if domain.startswith('www.'):
             domain = domain[4:]
         
+        # Handle mercadolibre subdomains (e.g., departamento.mercadolibre.com.ar)
+        if 'mercadolibre.com.ar' in domain:
+            return 'mercadolibre.com.ar'
+        
         return domain
     
     def get_config(self, url: str) -> Optional[Dict]:
