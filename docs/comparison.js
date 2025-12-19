@@ -199,6 +199,7 @@ function displayComparisonTable() {
     const tableBody = document.getElementById('comparison-table-body');
     const features = [
         { key: 'tipo_inmueble', label: 'Tipo de Inmueble' },
+        { key: 'anunciante', label: 'Anunciante' },
         { key: 'direccion', label: 'Dirección' },
         { key: 'barrio', label: 'Barrio' },
         { key: 'precio', label: 'Precio', format: 'currency' },

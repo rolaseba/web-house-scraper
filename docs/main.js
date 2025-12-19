@@ -112,6 +112,7 @@ function initializeApp() {
 function setupEventListeners() {
     // Búsqueda en tiempo real
     document.getElementById('search-input').addEventListener('input', debounce(applyFilters, 300));
+    document.getElementById('advertiser-input').addEventListener('input', debounce(applyFilters, 300));
 
     // Filtros
     document.getElementById('operation-filter').addEventListener('change', applyFilters);
@@ -405,6 +406,7 @@ function applyFilters() {
     const propertyFilter = document.getElementById('property-filter').value;
     const priceMin = parseFloat(document.getElementById('price-min').value) || 0;
     const priceMax = parseFloat(document.getElementById('price-max').value) || Infinity;
+    const advertiserTerm = document.getElementById('advertiser-input').value.toLowerCase();
     const statusFilter = document.getElementById('status-filter') ? document.getElementById('status-filter').value : '';
 
     // Obtener filtros de dormitorios seleccionados
@@ -417,6 +419,10 @@ function applyFilters() {
             property.direccion.toLowerCase().includes(searchTerm) ||
             property.barrio.toLowerCase().includes(searchTerm) ||
             property.descripcion_breve.toLowerCase().includes(searchTerm);
+
+        // Anunciante
+        const matchesAdvertiser = !advertiserTerm ||
+            (property.anunciante && property.anunciante.toLowerCase().includes(advertiserTerm));
 
         // Tipo de operación
         const matchesOperation = !operationFilter || property.tipo_operacion === operationFilter;
@@ -444,7 +450,7 @@ function applyFilters() {
                 return property.cantidad_dormitorios === parseInt(d);
             });
 
-        return matchesSearch && matchesOperation && matchesProperty && matchesPrice && matchesDormitorios && matchesStatus;
+        return matchesSearch && matchesAdvertiser && matchesOperation && matchesProperty && matchesPrice && matchesDormitorios && matchesStatus;
     });
 
     currentPage = 1;
@@ -460,6 +466,9 @@ function updateActiveFilters() {
 
     if (document.getElementById('search-input').value) {
         filters.push({ type: 'search', value: document.getElementById('search-input').value });
+    }
+    if (document.getElementById('advertiser-input').value) {
+        filters.push({ type: 'anunciante', value: document.getElementById('advertiser-input').value });
     }
     if (document.getElementById('operation-filter').value) {
         filters.push({ type: 'operation', value: document.getElementById('operation-filter').value });
@@ -489,6 +498,7 @@ function updateActiveFilters() {
 
 function clearFilters() {
     document.getElementById('search-input').value = '';
+    document.getElementById('advertiser-input').value = '';
     document.getElementById('operation-filter').value = '';
     document.getElementById('property-filter').value = '';
     document.getElementById('price-min').value = '';
