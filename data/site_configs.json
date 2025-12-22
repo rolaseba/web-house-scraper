@@ -225,6 +225,11 @@
                 "pattern": "\\\\\"(Quincho|Parrilla)\\\\\"",
                 "search_in": "html",
                 "default": false
+            },
+            "antiguedad": {
+                "type": "regex",
+                "pattern": "\\\\\"name\\\\\":\\\\\"Antigüedad\\\\\",\\\\\"value\\\\\":\\\\\"([^\\\\\"]+)\\\\\"",
+                "search_in": "html"
             }
         }
     },
