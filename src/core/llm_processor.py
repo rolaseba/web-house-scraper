@@ -138,11 +138,31 @@ Ahora extrae SOLO los campos faltantes de la propiedad:"""
                         "precio", "cantidad_dormitorios", "cantidad_banos", "cantidad_ambientes"]:
                 if value is not None:
                     try:
-                        # Remove commas and convert to number
-                        value = value.replace(',', '').replace('.', '') if isinstance(value, str) else value
-                        cleaned[field] = float(value) if '.' in str(value) else int(value)
-                    except (ValueError, TypeError, AttributeError):
-                        cleaned[field] = None
+                        # If it's already a number, keep it as is (will be cast below)
+                        if isinstance(value, (int, float)):
+                            num_value = float(value)
+                        else:
+                            # It's a string, clean basic whitespace
+                            v_str = str(value).strip()
+                            if not v_str:
+                                num_value = None
+                            else:
+                                # Don't remove separators here yet, let the standardizer handle complex formats
+                                # Only handle the simplest case if it's already a clean number string
+                                try:
+                                    num_value = float(v_str)
+                                except ValueError:
+                                    # If not a clean number string, pass through as string for the standardizer to handle
+                                    num_value = v_str
+                        
+                        # Apply specific types
+                        if field in ["precio", "metros_cuadrados_cubiertos", "metros_cuadrados_totales"]:
+                            cleaned[field] = float(num_value) if isinstance(num_value, (int, float)) else num_value
+                        else:
+                            cleaned[field] = int(float(num_value)) if isinstance(num_value, (int, float)) else num_value
+                            
+                    except (ValueError, TypeError):
+                        cleaned[field] = value # Pass through for standardizer
                 else:
                     cleaned[field] = None
             

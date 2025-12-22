@@ -51,3 +51,28 @@ EXTRACTION_FIELDS = [
     "anunciante",
     "costo_metro_cuadrado",  # CALCULADO: precio / m2 ponderados
 ]
+
+# Standardization Configuration
+STANDARDIZATION_ENABLED = os.getenv("STANDARDIZATION_ENABLED", "True").lower() == "true"
+STANDARDIZATION_CONFIG = {
+    "tipo_operacion": True,
+    "tipo_inmueble": True,
+    "direccion": True,
+    "barrio": True,
+    "metros_cuadrados_cubiertos": True,
+    "metros_cuadrados_totales": True,
+    "precio": True,
+    "moneda": True,
+    "cantidad_dormitorios": True,
+    "cantidad_banos": True,
+    "cantidad_ambientes": True,
+    "tiene_patio": True,
+    "tiene_quincho": True,
+    "tiene_pileta": True,
+    "tiene_cochera": True,
+    "tiene_balcon": True,
+    "tiene_terraza": True,
+    "piso": True,
+    "orientacion": True,
+    "antiguedad": True,
+}

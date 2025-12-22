@@ -44,6 +44,11 @@ def process_property(url: str, scraper: PropertyScraper, processor: LLMProcessor
         extracted_data = processor.process_property(scraped_data)
         console.print(f"  [green]✓[/green] Extracted {len(extracted_data)} fields")
         
+        # Step 2.5: Standardization
+        logger.info("Step 2.5: Standardizing data...")
+        from src.core.input_transformation import standardize_data
+        extracted_data = standardize_data(extracted_data)
+        
         # Step 3: Calculate fields
         logger.info("Step 3: Calculating derived fields...")
         from src.utils.calculated_fields import calculate_all_fields
