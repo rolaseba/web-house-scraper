@@ -19,12 +19,12 @@
             },
             "metros_cuadrados_totales": {
                 "type": "regex",
-                "pattern": "(\\d+)\\s*m²\\s*tot\\.",
+                "pattern": "(\\d+(?:[.,]\\d+)?)\\s*m²\\s*tot\\.",
                 "search_in": "html"
             },
             "metros_cuadrados_cubiertos": {
                 "type": "regex",
-                "pattern": "(\\d+)\\s*m²\\s*cub\\.",
+                "pattern": "(\\d+(?:[.,]\\d+)?)\\s*m²\\s*cub\\.",
                 "search_in": "html"
             },
             "cantidad_dormitorios": {
@@ -84,7 +84,7 @@
             },
             "metros_cuadrados_cubiertos": {
                 "type": "regex",
-                "pattern": "(\\d+)\\s*m²\\s*Cubierta",
+                "pattern": "(\\d+(?:[.,]\\d+)?)\\s*m²\\s*Cubierta",
                 "search_in": "html"
             },
             "cantidad_dormitorios": {
@@ -141,12 +141,12 @@
             },
             "metros_cuadrados_totales": {
                 "type": "regex",
-                "pattern": "\\\\\"attr\\\\\":\\\\\"total_surface\\\\\",\\\\\"value\\\\\":\\\\\"(\\d+)",
+                "pattern": "\\\"attr\\\":\\\"total_surface\\\",\\\"value\\\":\\\"(\\d+(?:[.,]\\d+)?)",
                 "search_in": "html"
             },
             "metros_cuadrados_cubiertos": {
                 "type": "regex",
-                "pattern": "\\\\\"attr\\\\\":\\\\\"roofed_surface\\\\\",\\\\\"value\\\\\":\\\\\"(\\d+)",
+                "pattern": "\\\"attr\\\":\\\"roofed_surface\\\",\\\"value\\\":\\\"(\\d+(?:[.,]\\d+)?)",
                 "search_in": "html"
             },
             "cantidad_dormitorios": {

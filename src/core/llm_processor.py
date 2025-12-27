@@ -130,12 +130,29 @@ Ahora extrae SOLO los campos faltantes de la propiedad:"""
         """
         cleaned = {}
         
-        for field in config.EXTRACTION_FIELDS:
-            value = data.get(field)
+        for field_name in config.EXTRACTION_FIELDS: # Renamed 'field' to 'field_name' for clarity as per instruction
+            value = data.get(field_name)
             
             # Handle numeric fields
-            if field in ["metros_cuadrados_cubiertos", "metros_cuadrados_totales", 
-                        "precio", "cantidad_dormitorios", "cantidad_banos", "cantidad_ambientes"]:
+            if field_name in ["metros_cuadrados_cubiertos", "metros_cuadrados_totales"]:
+                # Square meters: REAL with 2 decimal places
+                if value is not None:
+                    try:
+                        if isinstance(value, (int, float)):
+                            num_value = float(value)
+                        else:
+                            v_str = str(value).strip().replace(',', '.')
+                            num_value = float(v_str) if v_str else None
+                        
+                        # Standardize to 2 decimal places
+                        cleaned[field_name] = round(num_value, 2) if num_value is not None else None
+                    except (ValueError, TypeError):
+                        cleaned[field_name] = None
+                else:
+                    cleaned[field_name] = None
+            
+            elif field_name in ["precio", "cantidad_dormitorios", "cantidad_banos", "cantidad_ambientes"]:
+                # Other numeric fields
                 if value is not None:
                     try:
                         # If it's already a number, keep it as is (will be cast below)
@@ -156,38 +173,38 @@ Ahora extrae SOLO los campos faltantes de la propiedad:"""
                                     num_value = v_str
                         
                         # Apply specific types
-                        if field in ["precio", "metros_cuadrados_cubiertos", "metros_cuadrados_totales"]:
-                            cleaned[field] = float(num_value) if isinstance(num_value, (int, float)) else num_value
+                        if field_name == "precio":
+                            cleaned[field_name] = float(num_value) if isinstance(num_value, (int, float)) else num_value
                         else:
-                            cleaned[field] = int(float(num_value)) if isinstance(num_value, (int, float)) else num_value
+                            cleaned[field_name] = int(float(num_value)) if isinstance(num_value, (int, float)) else num_value
                             
                     except (ValueError, TypeError):
-                        cleaned[field] = value # Pass through for standardizer
+                        cleaned[field_name] = value # Pass through for standardizer
                 else:
-                    cleaned[field] = None
+                    cleaned[field_name] = None
             
             # Handle boolean fields
-            elif field in ["tiene_patio", "tiene_quincho", "tiene_pileta", "tiene_cochera",
+            elif field_name in ["tiene_patio", "tiene_quincho", "tiene_pileta", "tiene_cochera",
                           "tiene_balcon", "tiene_terraza"]:
                 if isinstance(value, bool):
-                    cleaned[field] = value
+                    cleaned[field_name] = value
                 elif isinstance(value, str):
-                    cleaned[field] = value.lower() in ['true', 'sí', 'si', 'yes', '1']
+                    cleaned[field_name] = value.lower() in ['true', 'sí', 'si', 'yes', '1']
                 else:
-                    cleaned[field] = False
+                    cleaned[field_name] = False
             
             # Handle string fields
             else:
                 if value is not None:
-                    cleaned[field] = str(value).strip()
+                    cleaned[field_name] = str(value).strip()
                     # Limit string length
-                    if field == "descripcion_breve":
-                        cleaned[field] = cleaned[field][:200]
-                    elif field not in ["direccion", "barrio", "tipo_operacion", "moneda", "antiguedad", "piso", 
+                    if field_name == "descripcion_breve":
+                        cleaned[field_name] = cleaned[field_name][:200]
+                    elif field_name not in ["direccion", "barrio", "tipo_operacion", "moneda", "antiguedad", "piso", 
                                       "tipo_inmueble", "orientacion"]:
-                        cleaned[field] = cleaned[field][:500]
+                        cleaned[field_name] = cleaned[field_name][:500]
                 else:
-                    cleaned[field] = None
+                    cleaned[field_name] = None
         
         return cleaned
     

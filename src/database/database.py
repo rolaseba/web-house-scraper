@@ -34,8 +34,9 @@ class PropertyDatabase:
     
     def _get_field_type(self, field_name: str) -> str:
         """Determine SQLite data type for a field based on its name."""
-        if field_name in ["metros_cuadrados_cubiertos", "metros_cuadrados_totales", 
-                         "cantidad_dormitorios", "cantidad_banos", "cantidad_ambientes"]:
+        if field_name in ["metros_cuadrados_cubiertos", "metros_cuadrados_totales"]:
+            return "REAL"
+        elif field_name in ["cantidad_dormitorios", "cantidad_banos", "cantidad_ambientes"]:
             return "INTEGER"
         elif field_name in ["precio", "costo_metro_cuadrado"]:
             return "REAL"

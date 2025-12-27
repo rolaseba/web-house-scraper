@@ -79,6 +79,15 @@ class StructuredExtractor:
         
         return text
     
+    def _standardize_square_meters(self, value: str) -> float:
+        """Standardize square meters to 2 decimal places."""
+        # Normalize decimal separator (comma to dot)
+        value = value.replace(',', '.')
+        # Remove thousand separators (spaces)
+        value = value.replace(' ', '')
+        # Convert and round to 2 decimals
+        return round(float(value), 2)
+    
     def extract_field(self, field_name: str, field_config: Dict, html: str, text: str) -> Optional[Any]:
         """Extract a single field using its configuration."""
         pattern_type = field_config.get('type')
@@ -99,8 +108,14 @@ class StructuredExtractor:
             
             # Try to convert to appropriate type
             if value:
-                if field_name in ['metros_cuadrados_cubiertos', 'metros_cuadrados_totales', 
-                                'cantidad_dormitorios', 'cantidad_banos', 'precio']:
+                if field_name in ['metros_cuadrados_cubiertos', 'metros_cuadrados_totales']:
+                    try:
+                        # Standardize to REAL with 2 decimal places
+                        value = self._standardize_square_meters(value)
+                    except ValueError:
+                        pass
+                
+                elif field_name in ['cantidad_dormitorios', 'cantidad_banos', 'precio']:
                     try:
                         # Remove commas and convert to number
                         value = value.replace(',', '').replace('.', '')
@@ -130,13 +145,20 @@ class StructuredExtractor:
             
             # Try to convert to number if needed
             if value:
-                if field_name in ['metros_cuadrados_cubiertos', 'metros_cuadrados_totales', 
-                                'cantidad_dormitorios', 'cantidad_banos', 'precio']:
+                if field_name in ['metros_cuadrados_cubiertos', 'metros_cuadrados_totales']:
+                    try:
+                        # Standardize to REAL with 2 decimal places
+                        value = self._standardize_square_meters(value)
+                    except ValueError:
+                        pass
+                
+                elif field_name in ['cantidad_dormitorios', 'cantidad_banos', 'precio']:
                     try:
                         value = value.replace(',', '').replace('.', '')
                         value = int(value)
                     except ValueError:
                         pass
+                
                 elif field_name in ['tiene_cochera', 'tiene_patio', 'tiene_quincho', 'tiene_pileta', 'tiene_balcon', 'tiene_terraza']:
                     try:
                         num_value = int(value)
