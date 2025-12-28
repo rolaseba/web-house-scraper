@@ -120,11 +120,15 @@ function setupEventListeners() {
     document.getElementById('price-min').addEventListener('input', debounce(applyFilters, 500));
     document.getElementById('price-max').addEventListener('input', debounce(applyFilters, 500));
 
-    // Filtro de status
-    const statusFilter = document.getElementById('status-filter');
-    if (statusFilter) {
-        statusFilter.addEventListener('change', applyFilters);
-    }
+    // Filtros de status
+    document.querySelectorAll('[data-status]').forEach(btn => {
+        btn.addEventListener('click', function () {
+            this.classList.toggle('bg-blue-600');
+            this.classList.toggle('text-white');
+            this.classList.toggle('bg-gray-200');
+            applyFilters();
+        });
+    });
 
     // Filtros de dormitorios
     document.querySelectorAll('[data-dormitorios]').forEach(btn => {
@@ -407,7 +411,9 @@ function applyFilters() {
     const priceMin = parseFloat(document.getElementById('price-min').value) || 0;
     const priceMax = parseFloat(document.getElementById('price-max').value) || Infinity;
     const advertiserTerm = document.getElementById('advertiser-input').value.toLowerCase();
-    const statusFilter = document.getElementById('status-filter') ? document.getElementById('status-filter').value : '';
+    // Obtener filtros de status seleccionados
+    const selectedStatuses = Array.from(document.querySelectorAll('[data-status].bg-blue-600'))
+        .map(btn => btn.dataset.status);
 
     // Obtener filtros de dormitorios seleccionados
     const selectedDormitorios = Array.from(document.querySelectorAll('[data-dormitorios].bg-blue-600'))
@@ -433,14 +439,15 @@ function applyFilters() {
         // Rango de precio
         const matchesPrice = property.precio >= priceMin && property.precio <= priceMax;
 
-        // Status
+        // Status - permitir múltiples selecciones
         let matchesStatus = true;
-        if (statusFilter) {
-            if (statusFilter === 'NO_STATUS') {
-                matchesStatus = !property.status || property.status === 'NO_STATUS' || property.status === '';
-            } else {
-                matchesStatus = property.status === statusFilter;
-            }
+        if (selectedStatuses.length > 0) {
+            matchesStatus = selectedStatuses.some(status => {
+                if (status === 'NO_STATUS') {
+                    return !property.status || property.status === 'NO_STATUS' || property.status === '';
+                }
+                return property.status === status;
+            });
         }
 
         // Dormitorios
@@ -479,8 +486,12 @@ function updateActiveFilters() {
     if (document.getElementById('price-min').value || document.getElementById('price-max').value) {
         filters.push({ type: 'price', value: `${document.getElementById('price-min').value || 0} - ${document.getElementById('price-max').value || '∞'}` });
     }
-    if (document.getElementById('status-filter') && document.getElementById('status-filter').value) {
-        filters.push({ type: 'status', value: document.getElementById('status-filter').value });
+    // Obtener status seleccionados
+    const selectedStatuses = Array.from(document.querySelectorAll('[data-status].bg-blue-600'))
+        .map(btn => btn.dataset.status);
+
+    if (selectedStatuses.length > 0) {
+        filters.push({ type: 'status', value: selectedStatuses.join(', ') });
     }
 
     if (filters.length > 0) {
@@ -503,9 +514,11 @@ function clearFilters() {
     document.getElementById('property-filter').value = '';
     document.getElementById('price-min').value = '';
     document.getElementById('price-max').value = '';
-    if (document.getElementById('status-filter')) {
-        document.getElementById('status-filter').value = '';
-    }
+    // Limpiar filtros de status
+    document.querySelectorAll('[data-status].bg-blue-600').forEach(btn => {
+        btn.classList.remove('bg-blue-600', 'text-white');
+        btn.classList.add('bg-gray-200');
+    });
 
     // Limpiar filtros de dormitorios
     document.querySelectorAll('[data-dormitorios].bg-blue-600').forEach(btn => {
